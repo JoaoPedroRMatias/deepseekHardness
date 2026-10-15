@@ -1,8 +1,8 @@
-# deepseekHardness
+# Deepseek Hardness - Docker
 
 **DeepSeek `dsh web` rodando em Docker, com acesso às pastas do seu sistema e plugin `dshmarket` instalado sozinho.**
 
-Sobe a interface web do `dsh` em um container. O container usa seu `HOME` real, então enxerga seus projetos e guarda configuração e plugins no host. Um comando sobe tudo.
+Sobe a interface web do `dsh` em um container. O container usa seu `HOME` real, então enxerga seus projetos e guarda configuração e plugins no host.
 
 ## O que faz
 
@@ -44,12 +44,6 @@ dsh web: http://127.0.0.1:3080/?token=...
 | Parar | `docker compose down` |
 | Shell no container | `docker exec -it dsh-web bash` |
 
-Rodar o `dsh` sem container, para comparar:
-
-```bash
-npx @deepseek-ai/dsh web
-```
-
 ## Como funciona
 
 ```mermaid
@@ -78,8 +72,6 @@ flowchart LR
 | Volume | `/home/user:/home/user` | `docker-compose.yml` |
 | Diretório de trabalho | `/home/user/projetos` | `docker-compose.yml` |
 
-Para mudar a porta, altere `--port`, os dois `--trusted-host` e o `HEALTHCHECK`.
-
 ## Desempenho
 
 - **Cache de build:** `apt` e `npm` usam cache do BuildKit. Rebuilds não baixam tudo de novo.
@@ -91,28 +83,8 @@ Para mudar a porta, altere `--port`, os dois `--trusted-host` e o `HEALTHCHECK`.
 - **Logs limitados:** 3 arquivos de 10 MB, o disco não enche.
 - **Store do pnpm** fica no seu `HOME`, então é compartilhado entre partidas.
 
-## Estrutura
-
-```
-deepseekHardness/
-├── Dockerfile          imagem: node 24 + git, ripgrep, ssh, pnpm, dsh
-├── docker-compose.yml  serviço, volume, rede, usuário
-├── entrypoint.sh       sobe o dsh web e instala o plugin
-└── .dockerignore       contexto de build mínimo
-```
-
 ## Segurança
 
 - O servidor escuta só em `127.0.0.1`. Não fica exposto na rede.
 - O token da URL dá acesso à interface. Não compartilhe o log.
 - O container lê e escreve em todo o seu `HOME`. Confie no que o `dsh` executa.
-
-## Solução de problemas
-
-| Sintoma | Causa provável | Ação |
-|---------|----------------|------|
-| Plugin não instalou | Imagem antiga | `docker compose up -d --build` |
-| `plugin add` falhou em silêncio | `\|\| true` esconde o erro | Rode `docker exec dsh-web dsh plugin --profile web add dshmarket` |
-| Porta em uso | Outro `dsh web` no host | Pare o outro processo na `3080` |
-| Arquivos com dono errado | uid diferente de 1000 | Ajuste `user:` no compose |
-| Saúde `unhealthy` | Servidor não subiu | `docker logs dsh-web` |
