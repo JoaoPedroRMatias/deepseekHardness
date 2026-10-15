@@ -1,5 +1,13 @@
 # Deepseek Hardness - Docker
 
+<div align="center">
+  <img
+    src="https://github.com/user-attachments/assets/ee370fe1-e581-434a-8215-fc9bd4b2b083"
+    alt="DeepSeek Harness"
+    width="800"
+  >
+</div>
+
 **DeepSeek `dsh web` rodando em Docker, com acesso às pastas do seu sistema e plugin `dshmarket` instalado sozinho.**
 
 Sobe a interface web do `dsh` em um container. O container usa seu `HOME` real, então enxerga seus projetos e guarda configuração e plugins no host.
