@@ -1,0 +1,19 @@
+services:
+  dsh:
+    build: .
+    image: dsh-web:local
+    container_name: dsh-web
+    init: true
+    restart: unless-stopped
+    user: "1000:1000"
+    environment:
+      HOME: /home/user
+    network_mode: host
+    volumes:
+      - /home/user:/home/user
+    working_dir: /home/user/projetos
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
